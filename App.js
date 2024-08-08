@@ -50,7 +50,7 @@ export default function App() {
   }
 
   if (error) {
-    return <Text>Error: {error.message}</Text>;
+    return <Text>Error appjs: {error.message}</Text>;
   }
 
   // Paso 2: Extraer las categorías

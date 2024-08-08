@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, View, ScrollView, RefreshControl } from 'react-native';
-import { Card, Button, Overlay } from '@rneui/themed';
+import { StyleSheet, Text, View, ScrollView, RefreshControl , Image} from 'react-native';
+import { Card, Button, Overlay, Badge} from '@rneui/themed';
 import { useRoute } from '@react-navigation/native';
 
 export default function CardsCategoryElement() {
@@ -55,11 +55,17 @@ export default function CardsCategoryElement() {
         }
       >
         {books.map((book, i) => {
+          const isActive = book.status === 1;
           return (
             <View key={i}>
               <Card style={styles.cards}>
                 <Card.Title>{book.titulo}</Card.Title>
                 <Card.Divider />
+                <Image 
+                  source={{uri: 'https://images.pexels.com/photos/159711/books-bookstore-book-reading-159711.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'}}
+                  style={styles.image}
+                  resizeMode='containt'
+                />
                 <Text style={styles.author}>{book.autor}</Text>
                 <Text style={styles.estatus}>{book.editorial}</Text>
                 <Button
@@ -72,8 +78,13 @@ export default function CardsCategoryElement() {
                 isVisible={visibleOverlayIndex === i}
                 onBackdropPress={() => toggleOverlay(i)}
               >
-                <Text>Fecha de publicacion: {book.fecha_publicacion}</Text>
-                <Text>{book.status}</Text>
+                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                  <Badge 
+                    status={isActive ? "success" : "error"} 
+                    containerStyle={styles.badgeContainer}
+                  />
+                  <Button title="Cerrar" onPress={() => toggleOverlay(i)} />
+                </View>
               </Overlay>
             </View>
           );
@@ -86,6 +97,11 @@ export default function CardsCategoryElement() {
 const styles = StyleSheet.create({
   container: {
     padding: 10,
+  },
+  image: {
+    width: '100%',
+    height: 200,
+    marginBottom: 10,
   },
   cards: {
 
