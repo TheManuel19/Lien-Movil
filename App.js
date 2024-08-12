@@ -7,15 +7,8 @@ import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import Cards from './src/elements/Cards';
 import CardsCategoryElement from './src/elements/CardsCategoryElement.jsx'
 
-const Drawer = createDrawerNavigator();
 
-function AnotherScreen() {
-  return (
-    <View style={styles.container}>
-      <Text>Otra pantalla</Text>
-    </View>
-  );
-}
+const Drawer = createDrawerNavigator();
 
 export default function App() {
   const [books, setBooks] = useState([]);
@@ -23,7 +16,7 @@ export default function App() {
   const [error, setError] = useState(null);
 
   const [categoriaIndex, setCategoriaIndex] = useState(null);
-  
+
   const toggleCategoria = (index) => {
     setCategoriaIndex(index === categoriaIndex ? null : index);
     console.log(setCategoriaIndex)
@@ -31,7 +24,7 @@ export default function App() {
 
   const fetchBooks = async () => {
     try {
-      const response = await fetch('https://pcbdpjmpt2.execute-api.us-east-2.amazonaws.com/Prod/all');
+      const response = await fetch('https://kqwpa7r6ec.execute-api.us-east-2.amazonaws.com/Prod/all');
       const data = await response.json();
       setBooks(data);
     } catch (err) {
@@ -61,11 +54,23 @@ export default function App() {
   return (
     <SafeAreaProvider>
       <NavigationContainer>
-        <Drawer.Navigator initialRouteName="Inicio">
+        <Drawer.Navigator
+          screenOptions={{
+            drawerActiveTintColor: '#fff', // Cambia el color del texto del item activo
+            drawerInactiveTintColor: '#a5a5a5', // Cambia el color del texto del item inactivo
+            drawerActiveBackgroundColor: '#0b8b6e', // Cambia el fondo del item activo
+            drawerLabelStyle: {
+              fontSize: 16,            // Cambia el tamaño del texto de los ítems
+            },
+            headerTintColor: '#0b8b6e',
+          }}
+          initialRouteName="Inicio"
+        >
           <Drawer.Screen name="Inicio" component={Cards} />
           {uniqueCategories.map((category, index) => (
-            <Drawer.Screen key={index} name={category} component={CardsCategoryElement} initialParams={{ categoria: category}}  />
+            <Drawer.Screen key={index} name={category} component={CardsCategoryElement} initialParams={{ categoria: category }} />
           ))}
+
         </Drawer.Navigator>
       </NavigationContainer>
     </SafeAreaProvider>
@@ -79,17 +84,3 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
 });
-
-
-
-  /**
-   * 
-   * <Overlay
-isVisible={visibleOverlayIndex === i}
-onBackdropPress={() => toggleOverlay(i)}
->
-   * 
-   */
-
-
-
