@@ -1,26 +1,40 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, View, ScrollView, RefreshControl, Image } from 'react-native';
-import { Card, Button, Overlay, Badge, Divider } from '@rneui/themed';
-import { useRoute } from '@react-navigation/native';
+import { StyleSheet, Text, View, ScrollView, RefreshControl, Image, Dimensions,SafeAreaView } from 'react-native';
+import { Card, Button, Overlay, Badge, Divider, Icon } from '@rneui/themed';
+import ButtonsElement from './ButtonsElement';
+import LoadingElement from './LoadingElement';
 
-export default function CardsCategoryElement() {
+const { width } = Dimensions.get('window');
+const getRandomImageUrl = () => {
+  const urls = [
+    'https://images.unsplash.com/photo-1522407183863-c0bf2256188c?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+    'https://images.unsplash.com/photo-1598618589929-b1433d05cfc6?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+    'https://images.unsplash.com/photo-1616330682546-2468b2d8dd17?q=80&w=1776&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+    'https://images.unsplash.com/photo-1464865885825-be7cd16fad8d?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+    'https://images.unsplash.com/photo-1524578271613-d550eacf6090?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
+  ];
+  const randomIndex = Math.floor(Math.random() * urls.length);
+  return urls[randomIndex];
+};
+export default function CardsCategoryElement({ categoria }) {
   const [books, setBooks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [visibleOverlayIndex, setVisibleOverlayIndex] = useState(null);
-  const [refreshing, setRefreshing] = React.useState(false);
+  const [refreshing, setRefreshing] = useState(false);
+  const [closeCards, setCloseCards] = useState(false);
 
-  const route = useRoute();
-  const { categoria } = route.params;
+  const handlePress = () => {
+    setCloseCards(true);
+  };
 
   const toggleOverlay = (index) => {
     setVisibleOverlayIndex(index === visibleOverlayIndex ? null : index);
   };
 
   const onRefresh = React.useCallback(() => {
-    fetchBooks(() => {
-      setRefreshing(false);
-    }, 2000)
+    setRefreshing(true);
+    fetchBooks().then(() => setRefreshing(false));
   }, []);
 
   const fetchBooks = async () => {
@@ -37,10 +51,10 @@ export default function CardsCategoryElement() {
 
   useEffect(() => {
     fetchBooks();
-  }, []);
+  }, [categoria]);
 
   if (loading) {
-    return <Text>Loading...</Text>;
+    return <LoadingElement/>
   }
 
   if (error) {
@@ -48,80 +62,104 @@ export default function CardsCategoryElement() {
   }
 
   return (
-    <View style={styles.container}>
-      <ScrollView
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-        }
-      >
-        {books.map((book, i) => {
-          const isActive = book.status === 1;
-          return (
-            <View key={i}>
-              <Card style={styles.cards}>
-                <Card.Title>{book.titulo}</Card.Title>
-                <Card.Divider />
-                <Image
-                  source={{ uri: 'https://images.pexels.com/photos/159711/books-bookstore-book-reading-159711.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1' }}
-                  style={styles.image}
-                  resizeMode='containt'
-                />
-                <Text style={styles.author}>{book.autor}</Text>
-                <Text style={styles.estatus}>{book.editorial}</Text>
-                <Button
-                  buttonStyle={styles.button}
-                  title='Más info...'
-                  onPress={() => toggleOverlay(i)}
-                />
-              </Card>
-
-              <Overlay
-                isVisible={visibleOverlayIndex === i}
-                onBackdropPress={() => toggleOverlay(i)}
-              >
-                <View>
-                  <View style={{ flexDirection: 'row' }}>
-                    <Text style={styles.titulos}>{book.titulo}</Text>
-                    <Badge
-                      value={isActive ? "En stock" : "Ocupado"}
-                      status={isActive ? "success" : "error"}
-                      containerStyle={styles.badgeContainer}
-                    />
-                  </View>
-
-                  <Divider />
-                  <Image
-                    source={{ uri: 'https://images.pexels.com/photos/159711/books-bookstore-book-reading-159711.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1' }}
-                    style={styles.overlayImage}
-                    resizeMode='containt'
-                  />
-                  <Divider />
-                  <Text style={styles.textDescription}>{book.descripcion}</Text>
-                  <View style={{ flexDirection: 'row-reverse', alignItems: 'center' }}>
-                    <Button buttonStyle={styles.button} title="Cerrar" onPress={() => toggleOverlay(i)} />
-                  </View>
-                </View>
-              </Overlay>
+    <SafeAreaView>
+      <View>
+        {!closeCards ? (
+          <ScrollView
+            refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+          >
+            <View style={{ flexDirection: 'row' }}>
+              <Icon
+                name="arrow-back"
+                type="material"
+                color="#517fa4"
+                onPress={handlePress}
+                size={30}
+              />
             </View>
-          );
-        })}
-      </ScrollView>
-    </View>
+            {books.map((book, i) => {
+              const isActive = book.status === 0;
+              return (
+                <View key={i}>
+                  <Card style={styles.cards}>
+                    <Card.Title>{book.titulo}</Card.Title>
+                    <Card.Divider />
+                    <Image
+                      source={{ uri: getRandomImageUrl() }}
+                      style={styles.image}
+                      resizeMode='contain'
+                    />
+                    <Text style={styles.author}>{book.autor}</Text>
+                    <Text style={styles.estatus}>{book.editorial}</Text>
+                    <Button
+                      buttonStyle={styles.button}
+                      title='Más info...'
+                      onPress={() => toggleOverlay(i)}
+                    />
+                  </Card>
+
+                  <Overlay
+                    isVisible={visibleOverlayIndex === i}
+                    onBackdropPress={() => toggleOverlay(i)}
+                    overlayStyle={styles.overlay}
+                  >
+                    <View>
+                      <View style={styles.titleContainer}>
+                        <Text style={styles.titulos}>{book.titulo}</Text>
+                        <Badge
+                          value={isActive ? "En stock" : "Ocupado"}
+                          status={isActive ? "success" : "error"}
+                          containerStyle={styles.badgeContainer}
+                        />
+                      </View>
+
+                      <Divider />
+                      <Image
+                        source={{ uri: 'https://images.pexels.com/photos/159711/books-bookstore-book-reading-159711.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1' }}
+                        style={styles.overlayImage}
+                        resizeMode='contain'
+                      />
+                      <Divider />
+                      <Text style={styles.textDescription}>{book.descripcion}</Text>
+                      <View style={{ flexDirection: 'row-reverse', alignItems: 'center' }}>
+                        <Button buttonStyle={styles.button} title="Cerrar" onPress={() => toggleOverlay(i)} />
+                      </View>
+                    </View>
+                  </Overlay>
+                </View>
+              );
+            })}
+          </ScrollView>
+        ) : (
+          <ButtonsElement />
+        )}
+      </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  overlay: {
+    width: '90%', // El ancho del overlay será el 90% del ancho de la pantalla
+    maxWidth: width * 0.9,
+  },
+  titleContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    alignItems: 'center',
+    marginBottom: 10,
+    maxWidth: '100%', // Ajuste al ancho del dispositivo
+  },
   titulos: {
     fontSize: 24,
+    flexShrink: 1, // Permite que el texto se encoja si es necesario
+    maxWidth: width * 0.7, // Máximo 70% del ancho de la pantalla
   },
   textDescription: {
     marginBottom: 10,
     marginTop: 10,
     fontSize: 14,
     textAlign: 'justify',
-  },
-  container: {
-    padding: 10,
   },
   button: {
     backgroundColor: '#0b8b6e',
@@ -148,6 +186,6 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   badgeContainer: {
-    marginLeft: 50,
+    marginLeft: 10,
   },
 });
