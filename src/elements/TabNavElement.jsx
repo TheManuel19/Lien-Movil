@@ -4,6 +4,7 @@ import { createMaterialBottomTabNavigator } from '@react-navigation/material-bot
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import Cards from './Cards';
 import ButtonsElement from './ButtonsElement';
+import BackELement from './BackELement';
 
 const Tab = createMaterialBottomTabNavigator();
 
@@ -19,7 +20,7 @@ export default function TabNavElement() {
         >
             <Tab.Screen
                 name="Feed"
-                component={Cards}
+                component={BackELement}
                 labeled
                 options={{
                     tabBarLabel: 'Home',

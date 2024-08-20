@@ -1,0 +1,5 @@
+name:OnWebsiteDeployon:push:branches:-"main"jobs:build_and_deploy_web:name:Build&DeployReacttoWebruns-on:ubuntu-latestpermissions:contents:writesteps:-uses:actions/checkout@v2-name:SetupNode.jsuses:actions/setup-node@v2with:node-version:'16'# Puedes especificar la versión de Node.js que necesites-name:Installdependenciesrun:|
+          npm install
+-name:BuildWebApplicationrun:|
+          npm run build
+-name:DeploytoGitHubPagesuses:peaceiris/actions-gh-pages@v3with:github_token:${{secrets.GITHUB_TOKEN}}publish_dir:./build# Directorio de salida para la compilación de React

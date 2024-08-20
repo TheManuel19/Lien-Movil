@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, View, SafeAreaView } from 'react-native'
+import { StyleSheet, Text, View, SafeAreaView, ActivityIndicator } from 'react-native'
 import { Button } from '@rneui/themed';
 import CardsCategoryElement from './CardsCategoryElement';
 import LoadingElement from './LoadingElement';

@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, View, ScrollView, RefreshControl, Image, Dimensions,SafeAreaView } from 'react-native';
+import { StyleSheet, Text, View, ScrollView, RefreshControl, Image, Dimensions, SafeAreaView } from 'react-native';
 import { Card, Button, Overlay, Badge, Divider } from '@rneui/themed';
 
-
 const { width } = Dimensions.get('window');
+const cardWidth = width * 0.8; // 80% del ancho de la pantalla
+const cardHeight = 300; // Altura fija para las tarjetas
+
 const getRandomImageUrl = () => {
   const urls = [
     'https://images.unsplash.com/photo-1522407183863-c0bf2256188c?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
@@ -15,6 +17,7 @@ const getRandomImageUrl = () => {
   const randomIndex = Math.floor(Math.random() * urls.length);
   return urls[randomIndex];
 };
+
 export default function Cards() {
   const [books, setBooks] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -60,13 +63,15 @@ export default function Cards() {
     <SafeAreaView>
       <View style={styles.container}>
         <ScrollView
+          horizontal={true} 
+          showsHorizontalScrollIndicator={false}
           refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
         >
           {books.map((book, i) => {
             const isActive = book.status === 0;
             return (
-              <View key={i}>
-                <Card>
+              <View key={i} style={styles.cardContainer}>
+                <Card containerStyle={styles.card}>
                   <Card.Title>{book.titulo}</Card.Title>
                   <Image
                     source={{ uri: getRandomImageUrl() }}
@@ -106,7 +111,7 @@ export default function Cards() {
                     />
                     <Divider />
                     <Text style={styles.textDescription}>{book.descripcion}</Text>
-                    <View style={{ flexDirection: 'row-reverse', alignItems: 'center' }}>
+                    <View style={{ flexDirection: 'row-reverse', alignItems: 'center', }}>
                       <Button buttonStyle={styles.button} title="Cerrar" onPress={() => toggleOverlay(i)} />
                     </View>
                   </View>
@@ -122,19 +127,47 @@ export default function Cards() {
 
 const styles = StyleSheet.create({
   container: {
-    padding: 10,
+    backgroundColor: 'transparent',
+    flexDirection:'row',
+  },
+  cardContainer: {
+    shadowColor: '#000', // Color de la sombra
+    shadowOffset: { width: 0, height: 5 }, // Desplazamiento de la sombra
+    shadowOpacity: 0.6, // Opacidad de la sombra
+    shadowRadius: 5, // Radio de la sombra
+    width: cardWidth,
+    height: cardHeight,
+    marginRight: 10,
+  },
+  card: {
+    width: '90%',
+    height: '90%',
+    justifyContent: 'space-between', // Asegura que los elementos estén espaciados correctamente dentro de la tarjeta
+  },
+  image: {
+    width: '100%',
+    height: 100, // Ajusta la altura de la imagen para que se mantenga consistente
+  },
+  author: {
+    fontSize: 16,
+    marginBottom: 5,
+  },
+  estatus: {
+    fontSize: 14,
+    color: 'gray',
+    marginBottom: 10,
   },
   titleContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     alignItems: 'center',
     marginBottom: 10,
-    maxWidth: '100%', // Ajuste al ancho del dispositivo
+    maxWidth: '100%',
   },
   titulos: {
     fontSize: 24,
-    flexShrink: 1, // Permite que el texto se encoja si es necesario
-    maxWidth: width * 0.7, // Máximo 70% del ancho de la pantalla
+    flexShrink: 1,
+    maxWidth: width * 0.7,
   },
   textDescription: {
     marginBottom: 10,
@@ -146,31 +179,17 @@ const styles = StyleSheet.create({
     backgroundColor: '#0b8b6e',
     borderRadius: 10,
   },
-  image: {
-    width: '100%',
-    height: 200,
-    marginBottom: 10,
-  },
   overlayImage: {
     marginTop: 10,
     width: '100%',
     height: 200,
     marginBottom: 10,
   },
-  author: {
-    fontSize: 16,
-    marginBottom: 5,
-  },
-  estatus: {
-    fontSize: 14,
-    color: 'gray',
-    marginBottom: 10,
-  },
   badgeContainer: {
     marginLeft: 10,
   },
   overlay: {
-    width: '90%', // El ancho del overlay será el 90% del ancho de la pantalla
+    width: '90%',
     maxWidth: width * 0.9,
   },
 });

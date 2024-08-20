@@ -80,8 +80,8 @@ export default function CardsCategoryElement({ categoria }) {
             {books.map((book, i) => {
               const isActive = book.status === 0;
               return (
-                <View key={i}>
-                  <Card style={styles.cards}>
+                <View key={i} style={styles.cardContainer}>
+                  <Card>
                     <Card.Title>{book.titulo}</Card.Title>
                     <Card.Divider />
                     <Image
@@ -139,6 +139,12 @@ export default function CardsCategoryElement({ categoria }) {
 }
 
 const styles = StyleSheet.create({
+  cardContainer:{
+    shadowColor: '#000', // Color de la sombra
+    shadowOffset: { width: 0, height: 5 }, // Desplazamiento de la sombra
+    shadowOpacity: 0.6, // Opacidad de la sombra
+    shadowRadius: 5, // Radio de la sombra
+  },
   overlay: {
     width: '90%', // El ancho del overlay será el 90% del ancho de la pantalla
     maxWidth: width * 0.9,
