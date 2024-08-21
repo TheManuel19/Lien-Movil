@@ -2,17 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View, ScrollView, RefreshControl, Image, Dimensions, SafeAreaView } from 'react-native';
 import { Card, Button, Overlay, Badge, Divider } from '@rneui/themed';
 
-const { width } = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 const cardWidth = width * 0.8; // 80% del ancho de la pantalla
-const cardHeight = 300; // Altura fija para las tarjetas
+const cardHeight = height * 0.4; // 40% de la altura de la pantalla
 
 const getRandomImageUrl = () => {
   const urls = [
     'https://images.unsplash.com/photo-1522407183863-c0bf2256188c?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    'https://images.unsplash.com/photo-1598618589929-b1433d05cfc6?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    'https://images.unsplash.com/photo-1616330682546-2468b2d8dd17?q=80&w=1776&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    'https://images.unsplash.com/photo-1464865885825-be7cd16fad8d?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    'https://images.unsplash.com/photo-1524578271613-d550eacf6090?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
+    // Otras URLs
   ];
   const randomIndex = Math.floor(Math.random() * urls.length);
   return urls[randomIndex];
@@ -60,12 +57,13 @@ export default function Cards() {
   }
 
   return (
-    <SafeAreaView>
+    <SafeAreaView style={{ flex: 1 }}>
       <View style={styles.container}>
         <ScrollView
           horizontal={true} 
           showsHorizontalScrollIndicator={false}
           refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+          contentContainerStyle={styles.scrollViewContent}
         >
           {books.map((book, i) => {
             const isActive = book.status === 0;
@@ -111,7 +109,7 @@ export default function Cards() {
                     />
                     <Divider />
                     <Text style={styles.textDescription}>{book.descripcion}</Text>
-                    <View style={{ flexDirection: 'row-reverse', alignItems: 'center', }}>
+                    <View style={{ flexDirection: 'row-reverse', alignItems: 'center' }}>
                       <Button buttonStyle={styles.button} title="Cerrar" onPress={() => toggleOverlay(i)} />
                     </View>
                   </View>
@@ -128,25 +126,31 @@ export default function Cards() {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: 'transparent',
-    flexDirection:'row',
+    flex: 1,
+    justifyContent: 'center', // Centrar el contenido en el eje vertical
+  },
+  scrollViewContent: {
+    alignItems: 'center', // Alinear el contenido horizontalmente en el centro
+    paddingVertical: 20, // Espacio vertical en el ScrollView
   },
   cardContainer: {
-    shadowColor: '#000', // Color de la sombra
-    shadowOffset: { width: 0, height: 5 }, // Desplazamiento de la sombra
-    shadowOpacity: 0.6, // Opacidad de la sombra
-    shadowRadius: 5, // Radio de la sombra
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 5 },
+    shadowOpacity: 0.6,
+    shadowRadius: 5,
     width: cardWidth,
     height: cardHeight,
     marginRight: 10,
+    marginBottom: 10,
   },
   card: {
-    width: '90%',
-    height: '90%',
-    justifyContent: 'space-between', // Asegura que los elementos estén espaciados correctamente dentro de la tarjeta
+    width: '100%',
+    height: '100%',
+    justifyContent: 'space-between',
   },
   image: {
     width: '100%',
-    height: 100, // Ajusta la altura de la imagen para que se mantenga consistente
+    height: cardHeight * 0.4,
   },
   author: {
     fontSize: 16,
@@ -167,7 +171,7 @@ const styles = StyleSheet.create({
   titulos: {
     fontSize: 24,
     flexShrink: 1,
-    maxWidth: width * 0.7,
+    maxWidth: '70%',
   },
   textDescription: {
     marginBottom: 10,

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, View, ScrollView, RefreshControl, Image, Dimensions,SafeAreaView } from 'react-native';
+import { StyleSheet, Text, View, ScrollView, RefreshControl, Image, Dimensions, SafeAreaView } from 'react-native';
 import { Card, Button, Overlay, Badge, Divider, Icon } from '@rneui/themed';
 import ButtonsElement from './ButtonsElement';
 import LoadingElement from './LoadingElement';
@@ -7,15 +7,12 @@ import LoadingElement from './LoadingElement';
 const { width } = Dimensions.get('window');
 const getRandomImageUrl = () => {
   const urls = [
-    'https://images.unsplash.com/photo-1522407183863-c0bf2256188c?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    'https://images.unsplash.com/photo-1598618589929-b1433d05cfc6?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    'https://images.unsplash.com/photo-1616330682546-2468b2d8dd17?q=80&w=1776&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    'https://images.unsplash.com/photo-1464865885825-be7cd16fad8d?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    'https://images.unsplash.com/photo-1524578271613-d550eacf6090?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
+    // URLs de las imágenes...
   ];
   const randomIndex = Math.floor(Math.random() * urls.length);
   return urls[randomIndex];
 };
+
 export default function CardsCategoryElement({ categoria }) {
   const [books, setBooks] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -54,7 +51,7 @@ export default function CardsCategoryElement({ categoria }) {
   }, [categoria]);
 
   if (loading) {
-    return <LoadingElement/>
+    return <LoadingElement />;
   }
 
   if (error) {
@@ -62,13 +59,13 @@ export default function CardsCategoryElement({ categoria }) {
   }
 
   return (
-    <SafeAreaView>
+    <SafeAreaView style={styles.container}>
       <View>
         {!closeCards ? (
           <ScrollView
             refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
           >
-            <View style={{ flexDirection: 'row' }}>
+            <View style={styles.header}>
               <Icon
                 name="arrow-back"
                 type="material"
@@ -76,12 +73,13 @@ export default function CardsCategoryElement({ categoria }) {
                 onPress={handlePress}
                 size={30}
               />
+              <Text style={styles.headerText}>{categoria}</Text>
             </View>
             {books.map((book, i) => {
               const isActive = book.status === 0;
               return (
                 <View key={i} style={styles.cardContainer}>
-                  <Card>
+                  <Card containerStyle={styles.card}>
                     <Card.Title>{book.titulo}</Card.Title>
                     <Card.Divider />
                     <Image
@@ -139,14 +137,32 @@ export default function CardsCategoryElement({ categoria }) {
 }
 
 const styles = StyleSheet.create({
-  cardContainer:{
-    shadowColor: '#000', // Color de la sombra
-    shadowOffset: { width: 0, height: 5 }, // Desplazamiento de la sombra
-    shadowOpacity: 0.6, // Opacidad de la sombra
-    shadowRadius: 5, // Radio de la sombra
+  container: {
+    backgroundColor: 'transparent',
+    flex: 1,
+    justifyContent: 'center',
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 10,
+  },
+  headerText: {
+    flex: 1,
+    textAlign: 'center',
+    fontSize: 20,
+  },
+  cardContainer: {
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 5 },
+    shadowOpacity: 0.6,
+    shadowRadius: 5,
+  },
+  card: {
+    width: '90%', // Aseguramos que el card ocupe todo el ancho disponible
   },
   overlay: {
-    width: '90%', // El ancho del overlay será el 90% del ancho de la pantalla
+    width: '90%',
     maxWidth: width * 0.9,
   },
   titleContainer: {
@@ -154,12 +170,12 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     alignItems: 'center',
     marginBottom: 10,
-    maxWidth: '100%', // Ajuste al ancho del dispositivo
+    maxWidth: '100%',
   },
   titulos: {
     fontSize: 24,
-    flexShrink: 1, // Permite que el texto se encoja si es necesario
-    maxWidth: width * 0.7, // Máximo 70% del ancho de la pantalla
+    flexShrink: 1,
+    maxWidth: width * 0.7,
   },
   textDescription: {
     marginBottom: 10,

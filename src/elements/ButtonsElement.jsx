@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, View, SafeAreaView, ActivityIndicator } from 'react-native'
+import { StyleSheet, Text, View, SafeAreaView, ActivityIndicator, ScrollView } from 'react-native';
 import { Button } from '@rneui/themed';
 import CardsCategoryElement from './CardsCategoryElement';
 import LoadingElement from './LoadingElement';
@@ -9,12 +9,11 @@ export default function ButtonsElement() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [showCards, setShowCards] = useState(false);
-    const [selectedCategory, setSelectedCategory] = useState(null); // Estado para la categoría seleccionada
-
+    const [selectedCategory, setSelectedCategory] = useState(null);
 
     const handlePress = (category) => {
-        setSelectedCategory(category); // Guarda la categoría seleccionada
-        setShowCards(true); // Cambia el estado para mostrar las cards
+        setSelectedCategory(category);
+        setShowCards(true);
     };
 
     const fetchBooks = async () => {
@@ -34,50 +33,54 @@ export default function ButtonsElement() {
     }, []);
 
     if (loading) {
-        return <LoadingElement/>
+        return <LoadingElement />;
     }
 
     if (error) {
-        return <Text>Error appjs: {error.message}</Text>;
+        return <Text>Error: {error.message}</Text>;
     }
 
-    // Paso 2: Extraer las categorías
-    const categories = books.map(book =>   book.categoria);
-    // Paso 3: Eliminar las categorías duplicadas
+    const categories = books.map(book => book.categoria);
     const uniqueCategories = [...new Set(categories)];
-    return (
-        <SafeAreaView>
-            <View>
-                {!showCards ? (uniqueCategories.map((category, index) => (
-                    <View style={styles.container}>
-                        <Button
-                            key={index}
-                            title={category}
-                            type="solid"
-                            onPress={() => handlePress(category)}
-                            buttonStyle={styles.button}
-                            titleStyle={styles.buttonText}
-                            containerStyle={styles.buttonContainer}
-                        />
-                    </View>
 
-                ))
+    return (
+        <SafeAreaView style={styles.safeArea}>
+            <ScrollView contentContainerStyle={styles.scrollView}>
+                {!showCards ? (
+                    uniqueCategories.map((category, index) => (
+                        <View style={styles.container} key={index}>
+                            <Button
+                                title={category}
+                                type="solid"
+                                onPress={() => handlePress(category)}
+                                buttonStyle={styles.button}
+                                titleStyle={styles.buttonText}
+                                containerStyle={styles.buttonContainer}
+                            />
+                        </View>
+                    ))
                 ) : (
                     <CardsCategoryElement categoria={selectedCategory} />
                 )}
-            </View>
+            </ScrollView>
         </SafeAreaView>
-    )
+    );
 }
 
 const styles = StyleSheet.create({
+    safeArea: {
+        flex: 1,
+    },
+    scrollView: {
+        paddingHorizontal: '5%', // Margen horizontal para que se vea bien en pantallas grandes y pequeñas
+    },
     container: {
         justifyContent: 'center',
         alignItems: 'center',
     },
     buttonContainer: {
         marginVertical: 10,
-        width: '80%', // Esto hace que todos los botones tengan el mismo ancho
+        width: '90%', // Ajuste a 90% del ancho del contenedor para más flexibilidad
     },
     button: {
         backgroundColor: '#0b8b6e',
@@ -88,11 +91,11 @@ const styles = StyleSheet.create({
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.3,
         shadowRadius: 3,
-        elevation: 5, // Solo para Android
+        elevation: 5,
     },
     buttonText: {
         fontSize: 18,
         fontWeight: 'bold',
         color: '#fff',
     },
-})
+});

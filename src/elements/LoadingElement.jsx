@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, ActivityIndicator, SafeAreaView } from 'react-native';
+import React from 'react';
+import { View, StyleSheet, ActivityIndicator, SafeAreaView } from 'react-native';
 
 export default function LoadingElement() {
     return (
@@ -12,6 +12,9 @@ export default function LoadingElement() {
 }
 
 const styles = StyleSheet.create({
+    safeArea: {
+        flex: 1,
+    },
     container: {
         flex: 1,
         justifyContent: 'center',

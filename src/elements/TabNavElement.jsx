@@ -7,21 +7,21 @@ import ButtonsElement from './ButtonsElement';
 import BackELement from './BackELement';
 
 const Tab = createMaterialBottomTabNavigator();
+const { width, height } = Dimensions.get('window');
 
 export default function TabNavElement() {
     return (
         <Tab.Navigator
             initialRouteName="Inicio"
             activeColor="#FFF"
-            inactiveColor="#9c9da2"  // Añadido inactiveColor
-            barStyle={{ backgroundColor: '#1e3d74' }}
+            inactiveColor="#9c9da2"
+            barStyle={styles.barStyle}
             shifting={true}
             sceneAnimationEnabled={true}
         >
             <Tab.Screen
                 name="Feed"
                 component={BackELement}
-                labeled
                 options={{
                     tabBarLabel: 'Home',
                     tabBarColor: "#061b87",
@@ -45,4 +45,9 @@ export default function TabNavElement() {
     );
 }
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+    barStyle: {
+        backgroundColor: '#1e3d74',
+        height: height * 0.1, // Ajusta la altura de la barra según la altura de la pantalla
+    },
+});
